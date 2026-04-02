@@ -115,12 +115,18 @@ export default function Home() {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
-                <button className="rounded-full bg-[#1e5f68] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1e5f68]/20 transition hover:translate-y-[-1px] hover:bg-[#184f57]">
-                  Explore Programmes
-                </button>
-                <button className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:border-[#1e5f68] hover:text-[#1e5f68]">
-                  Partner With Us
-                </button>
+                <a
+  href="/apply"
+  className="rounded-full bg-[#1e5f68] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1e5f68]/20 transition hover:translate-y-[-1px] hover:bg-[#184f57]"
+>
+  Apply Now
+</a>
+                <a
+  href="/partners"
+  className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-800 transition hover:border-[#1e5f68] hover:text-[#1e5f68]"
+>
+  Partner With Us
+</a>
               </div>
 
               <div className="mt-10 grid max-w-xl grid-cols-1 gap-4 sm:grid-cols-3">
