@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   const programmes = [
@@ -88,9 +89,11 @@ export default function Home() {
             </a>
           </nav>
 
-          <button className="rounded-full bg-[#1e5f68] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#184f57]">
-            Apply Now
-          </button>
+          <Link href="/apply">
+            <button className="rounded-full bg-[#1e5f68] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#184f57]">
+              Apply Now
+            </button>
+          </Link>
         </div>
       </header>
 
