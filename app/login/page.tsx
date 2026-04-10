@@ -1,11 +1,11 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/apply";
@@ -52,7 +52,8 @@ export default function LoginPage() {
 
       router.push(redirectTo);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
       setError(message);
     } finally {
       setLoading(false);
@@ -105,19 +106,6 @@ export default function LoginPage() {
             Sign in to access your learner dashboard, check your application progress,
             and stay updated on your training journey.
           </p>
-
-          <div className="mt-8 rounded-[2rem] bg-[#163c43] p-8 text-white shadow-sm">
-            <p className="text-sm uppercase tracking-[0.28em] text-white/70">
-              What you’ll access
-            </p>
-
-            <div className="mt-5 space-y-4 text-sm leading-7 text-white/85">
-              <p><span className="font-semibold text-white">•</span> Application status tracking</p>
-              <p><span className="font-semibold text-white">•</span> Programme information and updates</p>
-              <p><span className="font-semibold text-white">•</span> Learner support communication</p>
-              <p><span className="font-semibold text-white">•</span> Future document and progress management</p>
-            </div>
-          </div>
         </section>
 
         <section className="rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-slate-200">
@@ -188,5 +176,19 @@ export default function LoginPage() {
         </section>
       </main>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#f7f6f2]">
+          <p className="text-sm text-slate-600">Loading login page...</p>
+        </div>
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
   );
 }

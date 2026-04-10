@@ -1,11 +1,11 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
 
-export default function SignupPage() {
+function SignupPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/apply";
@@ -64,7 +64,8 @@ export default function SignupPage() {
 
       router.push(redirectTo);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
       setError(message);
     } finally {
       setLoading(false);
@@ -230,5 +231,19 @@ export default function SignupPage() {
         </section>
       </main>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-[#f7f6f2]">
+          <p className="text-sm text-slate-600">Loading signup page...</p>
+        </div>
+      }
+    >
+      <SignupPageContent />
+    </Suspense>
   );
 }
