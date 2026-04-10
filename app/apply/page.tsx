@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function ApplyPage() {
+  const router = useRouter();
+
   const programmes = [
     "Safety, Health & Quality Practitioner",
     "Solar Photovoltaic Service Technician",
@@ -12,6 +15,9 @@ export default function ApplyPage() {
     "New Venture Creation",
     "Major Appliances Repairer",
   ];
+
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [form, setForm] = useState({
     firstName: "",
@@ -25,13 +31,25 @@ export default function ApplyPage() {
   });
 
   const [cvFile, setCvFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);  
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      router.replace("/login?redirect=/apply");
+      return;
+    }
+
+    setIsAuthenticated(true);
+    setCheckingAuth(false);
+  }, [router]);
+
   const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-    )=> {
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -40,9 +58,9 @@ export default function ApplyPage() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0] || null;
-  setCvFile(file);
-};
+    const file = e.target.files?.[0] || null;
+    setCvFile(file);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,6 +69,13 @@ export default function ApplyPage() {
     setError("");
 
     try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        router.replace("/login?redirect=/apply");
+        return;
+      }
+
       const data = new FormData();
 
       data.append("firstName", form.firstName);
@@ -68,6 +93,9 @@ export default function ApplyPage() {
 
       const res = await fetch("/api/apply", {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: data,
       });
 
@@ -93,16 +121,28 @@ export default function ApplyPage() {
       const fileInput = document.getElementById("cv-upload") as HTMLInputElement | null;
       if (fileInput) {
         fileInput.value = "";
-    }
+      }
     } catch (err: unknown) {
-  const message =
-    err instanceof Error ? err.message : "Something went wrong";
+      const message =
+        err instanceof Error ? err.message : "Something went wrong";
 
-  setError(message);
-} finally {
+      setError(message);
+    } finally {
       setLoading(false);
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#f7f6f2]">
+        <p className="text-sm text-slate-600">Checking access...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f6f2] text-slate-900">
@@ -309,10 +349,10 @@ export default function ApplyPage() {
               <p className="text-sm uppercase tracking-[0.28em] text-white/70">Application Journey</p>
               <h3 className="mt-4 text-2xl font-semibold">Simple steps toward your future</h3>
               <div className="mt-6 space-y-4 text-sm leading-7 text-white/85">
-                <p><span className="font-semibold text-white">1.</span> Complete the online application form.</p>
-                <p><span className="font-semibold text-white">2.</span> Submit your details and CV.</p>
-                <p><span className="font-semibold text-white">3.</span> Await review and further communication.</p>
-                <p><span className="font-semibold text-white">4.</span> Begin your training journey with Kinnor Institute.</p>
+                <p><span className="font-semibold text-white">1.</span> Sign up or log in to your account.</p>
+                <p><span className="font-semibold text-white">2.</span> Complete the online application form.</p>
+                <p><span className="font-semibold text-white">3.</span> Submit your details and CV.</p>
+                <p><span className="font-semibold text-white">4.</span> Await review and further communication.</p>
               </div>
             </div>
 

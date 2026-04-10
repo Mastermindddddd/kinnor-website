@@ -1,7 +1,21 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  const handleApplyClick = () => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      router.push("/dashboard");
+    } else {
+      router.push("/apply");
+    }
+  };
   const programmes = [
     {
       title: "Safety, Health & Quality Practitioner",
@@ -89,11 +103,10 @@ export default function Home() {
             </a>
           </nav>
 
-          <Link href="/apply">
-            <button className="rounded-full bg-[#1e5f68] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#184f57]">
+            <button onClick={handleApplyClick} className="rounded-full bg-[#1e5f68] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#184f57]">
               Apply Now
             </button>
-          </Link>
+          
         </div>
       </header>
 
@@ -119,7 +132,7 @@ export default function Home() {
 
               <div className="mt-8 flex flex-wrap gap-4">
                 <a
-  href="/apply"
+  onClick={handleApplyClick}
   className="rounded-full bg-[#1e5f68] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#1e5f68]/20 transition hover:translate-y-[-1px] hover:bg-[#184f57]"
 >
   Apply Now

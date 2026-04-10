@@ -1,7 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, model, models } from "mongoose";
 
-const ApplicationSchema = new mongoose.Schema(
+const ApplicationSchema = new Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
     firstName: {
       type: String,
       required: true,
@@ -59,5 +64,7 @@ const ApplicationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.Application ||
-  mongoose.model("Application", ApplicationSchema);
+const Application =
+  models.Application || model("Application", ApplicationSchema);
+
+export default Application;

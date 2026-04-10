@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
+import { verifyToken } from "@/lib/auth";
 
 const s3 = new S3Client({
   region: process.env.AWS_REGION!,
@@ -13,18 +14,30 @@ const s3 = new S3Client({
 
 export async function POST(request: Request) {
   try {
+    const authHeader = request.headers.get("authorization");
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { message: "Unauthorized. Please log in first." },
+        { status: 401 }
+      );
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = verifyToken(token);
+
     await connectDB();
 
     const formData = await request.formData();
 
-    const firstName = formData.get("firstName");
-    const lastName = formData.get("lastName");
-    const email = formData.get("email");
-    const phone = formData.get("phone");
-    const programme = formData.get("programme");
-    const qualification = formData.get("qualification");
-    const studyMode = formData.get("studyMode");
-    const motivation = formData.get("motivation");
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
+    const email = formData.get("email") as string;
+    const phone = formData.get("phone") as string;
+    const programme = formData.get("programme") as string;
+    const qualification = formData.get("qualification") as string;
+    const studyMode = formData.get("studyMode") as string;
+    const motivation = formData.get("motivation") as string;
     const cv = formData.get("cv");
 
     if (
@@ -82,6 +95,7 @@ export async function POST(request: Request) {
     const cvUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
 
     const application = await Application.create({
+      user: decoded.userId,
       firstName,
       lastName,
       email,
