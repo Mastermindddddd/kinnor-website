@@ -85,14 +85,14 @@ export async function POST(request: Request) {
 
     await s3.send(
       new PutObjectCommand({
-        Bucket: process.env.AWS_S3_BUCKET_NAME!,
+        Bucket: process.env.MY_AWS_S3_BUCKET_NAME!,
         Key: key,
         Body: buffer,
         ContentType: cv.type,
       })
     );
 
-    const cvUrl = `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${key}`;
+    const cvUrl = `https://${process.env.MY_AWS_S3_BUCKET_NAME}.s3.${process.env.MY_AWS_REGION}.amazonaws.com/${key}`;
 
     const application = await Application.create({
       user: decoded.userId,
